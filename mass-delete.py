@@ -66,33 +66,45 @@ def filter_emails(args, creds):
       print("No matching emails found, exiting.")
       sys.exit()
     
+    email_ids = [email["id"] for email in emails["messages"]]
     choice = input("Do you want to trash (t) or permanently delete (d) emails?  ").strip().lower()
 
     if choice == "t":
-      trash_emails(emails, service)
+      trash_emails(email_ids, service)
     elif choice == "d":
-      delete_emails(emails, service)
+      delete_emails(email_ids, service)
     else:
       print("Invalid choice, exiting.")
       sys.exit()
 
-def trash_emails(emails, service):
-  print("TODO: trash emails")
+def trash_emails(email_ids, service):
+  confirmation = input(f"Do you want to move {len(email_ids)} to trash? (y/n)  ").strip().lower()
+  
+  if confirmation == "y":
+    service.users().messages().batchModify(
+      userId="me",
+      body={"ids": email_ids, "addLabelIds": ["TRASH"]},
+    ).execute()
 
-def delete_emails(emails, service):
-  email_ids = [email["id"] for email in emails["messages"]]
+  else:
+    abort()
 
-  confirmation = input(f"Do you want to permanently delete {len(emails['messages'])} emails? (y/n)  ").strip().lower()
+
+def delete_emails(email_ids, service):
+  confirmation = input(f"Do you want to permanently delete {len(email_ids)} emails? (y/n)  ").strip().lower()
 
   if confirmation == "y":
     service.users().messages().batchDelete(
       userId="me",
       body={"ids": email_ids}
     ).execute()
+
   else:
-    print("Aborting operation and exiting.")
-    sys.exit()
+    abort()
   
+def abort():
+  print("Aborting operation and exiting.")
+  sys.exit()
 
 if __name__ == "__main__":
   main()
