@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+SCOPES = ["https://mail.google.com/"]
 
 
 def main():
@@ -69,19 +69,30 @@ def filter_emails(args, creds):
     choice = input("Do you want to trash (t) or permanently delete (d) emails?  ").strip().lower()
 
     if choice == "t":
-      trash_emails(emails)
+      trash_emails(emails, service)
     elif choice == "d":
-      delete_emails(emails)
+      delete_emails(emails, service)
     else:
       print("Invalid choice, exiting.")
       sys.exit()
 
-def trash_emails(emails):
+def trash_emails(emails, service):
   print("TODO: trash emails")
 
-def delete_emails(emails):
-  print("TODO: delete emails")
+def delete_emails(emails, service):
+  email_ids = [email["id"] for email in emails["messages"]]
 
+  confirmation = input(f"Do you want to permanently delete {len(emails['messages'])} emails? (y/n)  ").strip().lower()
+
+  if confirmation == "y":
+    service.users().messages().batchDelete(
+      userId="me",
+      body={"ids": email_ids}
+    ).execute()
+  else:
+    print("Aborting operation and exiting.")
+    sys.exit()
+  
 
 if __name__ == "__main__":
   main()
