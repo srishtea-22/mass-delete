@@ -11,28 +11,28 @@ This was a personal project that I built for deleting repetitive emails in my co
 
 ## Steps to use it for yourself
 
-### 1. Clone the repo
+1. Clone the repo
 ```bash
 git clone https://github.com/srishtea-22/mass-delete.git
 cd mass-delete
 ```
 
-### 2. Install dependencies
+2. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Set up a Google Cloud Project
-1. Create a [Google Cloud Project](https://developers.google.com/workspace/guides/create-project)
-2. Navigate to **APIs & Services > Library** and enable the **Gmail API**
+3. Set up a Google Cloud Project
+- Create a [Google Cloud Project](https://developers.google.com/workspace/guides/create-project)
+- Navigate to **APIs & Services > Library** and enable the **Gmail API**
 
-### 4. [Configure the OAuth consent screen](https://developers.google.com/workspace/gmail/api/quickstart/python#configure_the_oauth_consent_screen)
+4. [Configure the OAuth consent screen](https://developers.google.com/workspace/gmail/api/quickstart/python#configure_the_oauth_consent_screen)
 
-### 5. [Authorize credentials for a desktop application](https://developers.google.com/workspace/gmail/api/quickstart/python#authorize_credentials_for_a_desktop_application)
+5. [Authorize credentials for a desktop application](https://developers.google.com/workspace/gmail/api/quickstart/python#authorize_credentials_for_a_desktop_application)
 
-### 6. Save the downloaded JSON file as `credentials.json`, and move the file to the root of the directory.
+6. Save the downloaded JSON file as `credentials.json`, and move the file to the root of the directory.
 
-### 7. Run the script
+7. Run the script
 
 ```bash
 # First run will open a browser window asking you to authorize the app
