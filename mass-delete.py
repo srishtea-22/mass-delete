@@ -1,5 +1,6 @@
 import os.path
 import argparse
+import sys
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -60,7 +61,26 @@ def filter_emails(args, creds):
 
     service = build("gmail", "v1", credentials=creds)
     emails = service.users().messages().list(userId="me", q=query).execute()
-    print(emails)
+    
+    if len(emails["messages"]) == 0:
+      print("No matching emails found, exiting.")
+      sys.exit()
+    
+    choice = input("Do you want to trash (t) or permanently delete (d) emails?  ").strip().lower()
+
+    if choice == "t":
+      trash_emails(emails)
+    elif choice == "d":
+      delete_emails(emails)
+    else:
+      print("Invalid choice, exiting.")
+      sys.exit()
+
+def trash_emails(emails):
+  print("TODO: trash emails")
+
+def delete_emails(emails):
+  print("TODO: delete emails")
 
 
 if __name__ == "__main__":
