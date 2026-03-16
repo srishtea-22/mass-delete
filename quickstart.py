@@ -1,4 +1,5 @@
 import os.path
+import argparse
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -11,9 +12,6 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 
 def main():
-  """Shows basic usage of the Gmail API.
-  Lists the user's Gmail labels.
-  """
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
@@ -33,22 +31,36 @@ def main():
     with open("token.json", "w") as token:
       token.write(creds.to_json())
 
-  try:
-    # Call the Gmail API
-    service = build("gmail", "v1", credentials=creds)
-    results = service.users().labels().list(userId="me").execute()
-    labels = results.get("labels", [])
+  # take arguments from user
+  parser = argparse.ArgumentParser(description="Delete emails by keyword, sender or both")
 
-    if not labels:
-      print("No labels found.")
-      return
-    print("Labels:")
-    for label in labels:
-      print(label["name"])
+  parser.add_argument("--sender", help="Email address of the sender")
+  parser.add_argument("--keyword", help="Keyword to search for in emails")
+
+  args = parser.parse_args()
+
+  if not args.keyword and not args.sender:
+    parser.error("Plese provide at least one of --sender or --keyword")
+  
+  try:
+    filter_emails(args, creds)
 
   except HttpError as error:
-    # TODO(developer) - Handle errors from gmail API.
     print(f"An error occurred: {error}")
+
+
+def filter_emails(args, creds):
+    query_parts = []
+    if args.sender:
+      query_parts.append(f"from:{args.sender}")
+    if args.keyword:
+      query_parts.append(args.keyword)
+
+    query = " ".join(query_parts)
+
+    service = build("gmail", "v1", credentials=creds)
+    emails = service.users().messages().list(userId="me", q=query).execute()
+    print(emails)
 
 
 if __name__ == "__main__":
